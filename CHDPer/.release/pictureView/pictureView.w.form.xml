@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<div xmlns="http://www.w3.org/1999/xhtml" component="$model/UI2/system/components/justep/window/window" design="device:m;" xid="window" class="window cy6n22e" data-bind="component:{name:'$model/UI2/system/components/justep/window/window'}" __cid="cy6n22e" components="$model/UI2/system/components/justep/model/model,$model/UI2/system/components/justep/loadingBar/loadingBar,$model/UI2/system/components/justep/button/button,$model/UI2/system/components/justep/windowReceiver/windowReceiver,$model/UI2/system/components/justep/scrollView/scrollView,$model/UI2/system/components/justep/list/list,$model/UI2/system/components/justep/titleBar/titleBar,$model/UI2/system/components/justep/panel/child,$model/UI2/system/components/justep/data/data,$model/UI2/system/components/justep/window/window,$model/UI2/system/components/justep/panel/panel,">
+  <xhtml:style xmlns:xhtml="http://www.w3.org/1999/xhtml">null</xhtml:style>  
+  <div component="$model/UI2/system/components/justep/model/model" xid="model" style="display:none" data-bind="component:{name:'$model/UI2/system/components/justep/model/model'}" __cid="cy6n22e" class="cy6n22e"></div>  
+  <div component="$model/UI2/system/components/justep/panel/panel" class="x-panel x-full pcvIjaeu-iosstatusbar cy6n22e" xid="viewPanel" data-bind="component:{name:'$model/UI2/system/components/justep/panel/panel'}" __cid="cy6n22e"> 
+    <div class="x-panel-top cy6n22e" xid="top1" component="$model/UI2/system/components/justep/panel/child" data-bind="component:{name:'$model/UI2/system/components/justep/panel/child'}" __cid="cy6n22e"> 
+      <div component="$model/UI2/system/components/justep/titleBar/titleBar" class="x-titlebar cy6n22e" data-bind="component:{name:'$model/UI2/system/components/justep/titleBar/titleBar'}" data-config="{&quot;title&quot;:&quot;照片查看&quot;}" __cid="cy6n22e"> 
+        <div class="x-titlebar-left cy6n22e" __cid="cy6n22e"> 
+          <a component="$model/UI2/system/components/justep/button/button" class="btn btn-link btn-only-icon cy6n22e" xid="backBtn" data-bind="component:{name:'$model/UI2/system/components/justep/button/button'}" data-events="onClick:{&quot;operation&quot;:&quot;viewDataReceiver.windowCancel&quot;}" data-config="{&quot;icon&quot;:&quot;icon-chevron-left&quot;,&quot;label&quot;:&quot;&quot;}" __cid="cy6n22e"> 
+            <i class="icon-chevron-left cy6n22e" __cid="cy6n22e"/>  
+            <span __cid="cy6n22e" class="cy6n22e"/> 
+          </a> 
+        </div>  
+        <div class="x-titlebar-title cy6n22e" __cid="cy6n22e">照片查看</div>  
+        <div class="x-titlebar-right  cy6n22e" __cid="cy6n22e">
+          <div class="empty cy6n22e" __cid="cy6n22e"/>
+        </div> 
+      </div> 
+    </div>  
+    <div class="x-panel-content cy6n22e" xid="content1" component="$model/UI2/system/components/justep/panel/child" data-bind="component:{name:'$model/UI2/system/components/justep/panel/child'}" __cid="cy6n22e">
+      <div class="x-scroll cy6n22e" component="$model/UI2/system/components/justep/scrollView/scrollView" xid="scrollView1" data-bind="component:{name:'$model/UI2/system/components/justep/scrollView/scrollView'}" data-config="{&quot;autoAppend&quot;:false}" __cid="cy6n22e"> 
+        <div class="x-content-center x-pull-down container cy6n22e" xid="div1" __cid="cy6n22e"> 
+          <i class="x-pull-down-img glyphicon x-icon-pull-down cy6n22e" xid="i1" __cid="cy6n22e"/>  
+          <span class="x-pull-down-label cy6n22e" xid="span1" __cid="cy6n22e">下拉刷新...</span>
+        </div>  
+        <div class="x-scroll-content cy6n22e" xid="div2" style="height:auto;width:auto;" __cid="cy6n22e"> 
+          <div component="$model/UI2/system/components/justep/list/list" class="x-list cy6n22e" xid="list5" data-bind="component:{name:'$model/UI2/system/components/justep/list/list'}" data-config="{&quot;data&quot;:&quot;picViewData&quot;}" __cid="cy6n22e"> 
+            <ul class="x-list-template hide cy6n22e" xid="listTemplateUl5" bind-foreach="{data:$model.foreach_list5($element),afterRender:$model.foreach_afterRender_list5.bind($model,$element)}" __cid="cy6n22e"> 
+              <li xid="li5" style="width:auto;height:auto;" __cid="cy6n22e" class="cy6n22e"> 
+                <div xid="div4" style="height:auto;width:auto;" __cid="cy6n22e" class="cy6n22e">
+                  <img src="" alt="" xid="image1" style="height:114px;width:auto;" bind-attr-src=" val(&quot;photo_URL&quot;)" height="auto" __cid="cy6n22e" class="cy6n22e"/>
+                </div>
+              </li>
+            </ul> 
+          </div>
+        </div>  
+        <div class="x-content-center x-pull-up cy6n22e" xid="div3" __cid="cy6n22e"> 
+          <span class="x-pull-up-label cy6n22e" xid="span2" __cid="cy6n22e">加载更多...</span>
+        </div> 
+      </div>
+    </div>  
+    <style __cid="cy6n22e" class="cy6n22e">.x-panel.pcvIjaeu-iosstatusbar &gt;.x-panel-top {height: 48px;}.x-panel.pcvIjaeu-iosstatusbar &gt;.x-panel-content { top: 48px;bottom: nullpx;}.x-panel.pcvIjaeu-iosstatusbar &gt;.x-panel-bottom {height: nullpx;}.iosstatusbar .x-panel.pcvIjaeu-iosstatusbar &gt;.x-panel-top,.iosstatusbar .x-panel .x-panel-content .x-has-iosstatusbar.x-panel.pcvIjaeu-iosstatusbar &gt;.x-panel-top {height: 68px;}.iosstatusbar .x-panel.pcvIjaeu-iosstatusbar &gt;.x-panel-content,.iosstatusbar .x-panel .x-panel-content .x-has-iosstatusbar.x-panel.pcvIjaeu-iosstatusbar &gt;.x-panel-content { top: 68px;}.iosstatusbar .x-panel .x-panel-content .x-panel.pcvIjaeu-iosstatusbar &gt;.x-panel-top {height: 48px;}.iosstatusbar .x-panel .x-panel-content .x-panel.pcvIjaeu-iosstatusbar &gt;.x-panel-content {top: 48px;}</style>
+  </div>  
+  <span component="$model/UI2/system/components/justep/windowReceiver/windowReceiver" xid="viewDataReceiver" style="top:74px;left:21px;" data-bind="component:{name:'$model/UI2/system/components/justep/windowReceiver/windowReceiver'}" data-events="onReceive:viewDataReceiverReceive" __cid="cy6n22e" class="cy6n22e"/>
+</div>
