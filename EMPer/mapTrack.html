@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+		#golist {display: none;}
+		@media (max-device-width: 780px){#golist{display: block !important;}}
+	</style>
+    <script type="text/javascript" src="../system/lib/jquery/jquery-1.11.1.js"></script>
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+    
+    <title>百度地图定位</title>
+    
+</head>
+<body>
+<div id="allmap"></div>
+<script type="text/javascript" >
+		var map;
+		var points = [];
+		var icons=[];
+		var opid ="";
+		var timer;
+    	$(function(){
+    		map = new BMap.Map("allmap");
+			var preOriginPoint = new BMap.Point("116.45764191999997","39.8622934399999");
+			map.addControl(new BMap.ZoomControl());
+			map.centerAndZoom(preOriginPoint, 20);
+    	});
+	    $(window).on('message',function(message){
+	    	var data = message.originalEvent.data;
+	    	if(data){
+				try{/*这里是为了兼容IE9*/
+					data = JSON.parse(data);
+				}catch(e){}
+				opid =data.sendOpid;
+				var position = data.position;
+	    		var status ="";
+				for (var i=0;i<=position.length-1;i++){
+					var longitude = position[i].lon;
+					var latitude = position[i].lat;
+					var head = position[i].alt;
+					var suid = position[i].suid;
+					var tflag = position[i].tflag;
+					var outOrIn = position[i].outlinestatedesc;
+					if("0".indexOf(tflag)>-1){
+						if("在线".indexOf(outOrIn)>-1){
+							status ="blue_";
+						}else{
+							status ="black_";
+						}
+					}else{
+						status = "red_";
+					}					
+					var address = "当前位置";
+					// 百度地图API功能
+					var originPoint = new BMap.Point(longitude,latitude);
+					var marker = new BMap.Marker(originPoint);
+					var icon = gethead(head);
+					drawPoint(originPoint,icon,status,position[i]);
+					if(i==position.length-1){
+						map.centerAndZoom(originPoint, 15);	
+					}
+				}
+				closeloading();
+				var msgs = "{suid:"+suid+",OPID:"+opid+"}";
+				if(timer){
+					window.clearTimeout(timer); // 清楚定时器
+				}
+				timer =setTimeout(function(){return trackInTime(msgs)},30000);
+	    	}
+		});
+var marks;
+var isclicked = true;
+function drawPoint(point,icon,status,data) {
+	//清楚覆盖物
+	map.clearOverlays();
+	// 创建小狐狸
+	var myIcon = new BMap.Icon(
+			"./img/"+status+icon+".png", new BMap.Size(
+					300, 157), {
+				offset : new BMap.Size(10, 25),
+				imageOffset : new BMap.Size(145, 70)
+			});
+	/*创建覆盖物信息窗口*/
+	 var opts = {    
+			 width : 270,     // 信息窗口宽度    
+			 height: 200,     // 信息窗口高度    
+			 title : data.vname  // 信息窗口标题   
+			} ;
+	 var infoWindow = new BMap.InfoWindow(getInfoWindow(data), opts);  // 创建信息窗口对象   			
+	var marker2 = new BMap.Marker(point, {
+				icon : myIcon
+			}); // 创建标注
+	map.removeOverlay(marks);
+	marker2.addEventListener("click", function(){
+		map.openInfoWindow(infoWindow, map.getCenter());      // 打开信息窗口	
+  	}); 		
+	map.addOverlay(marker2); // 将标注添加到地图中
+	map.centerAndZoom(point, 15);
+	//marks = marker2;
+	//map.setCenter(point);
+}
+function gethead(degree){
+	   degree =degree/3600;
+		if ((degree >= 338 && degree <= 360) || (degree >= 0 && degree < 23)) {
+			return "0";
+		} else if (degree >= 23 && degree < 68) {
+			return "45";
+		} else if (degree >= 68 && degree < 113) {
+			return "90";
+		} else if (degree >= 113 && degree < 158) {
+			return "135";
+		} else if (degree >= 158 && degree < 203) {
+			return "180";
+		} else if (degree >= 203 && degree < 248) {
+			return "225";
+		} else if (degree >= 248 && degree < 293) {
+			return "270";
+		} else if (degree >= 293 && degree < 338) {
+			return "315";
+		} else {
+			return "0";
+		}
+}
+function stopTrackTime(msgs,opid){
+	if (timer) {
+		window.clearTimeout(timer); // 清楚定时器
+	}
+	var partenW = window.parent;
+	var parentDiv = partenW.document.getElementById('callBackTrack');
+    var parentModel = partenW.justep.Bind.contextFor(parentDiv).$model;
+    parentModel.stopSendToMap(msgs,opid);    //回调至mapTrackActivity.w      
+}
+function closeloading(){
+	var partenW = window.parent;
+	var parentDiv = partenW.document.getElementById('callBackTrack');
+    var parentModel = partenW.justep.Bind.contextFor(parentDiv).$model;
+    parentModel.closeLoading();    //回调至mapTrackActivity.w     
+}	
+function trackInTime(msgs){
+			$.ajax( {  
+		     url:'http://222.161.211.36:8080/Android_Server/lasttrack',// 跳转到 action  
+		     data:{  
+		    	msg:msgs
+		     },  
+		     type:'post',  
+		     dataType:'json',  
+		     success:function(msg) {
+		        	 var dataobj=msg.data;  
+		        	for(var i=0;i<=dataobj.length-1;i++){
+		        		 var point = new BMap.Point(dataobj[i].lon,dataobj[i].lat); 
+		        		 var suid = dataobj[i].suid;
+						 var head = dataobj[i].alt;
+						 var icon = gethead(head);
+						 var outOrIn = dataobj[i].outlinestatedesc;
+						 if("在线".indexOf(outOrIn)>-1){
+							 status ="blue_";
+						 }else{
+							 status ="black_";
+						 }
+						 drawPoint(point,icon,status,dataobj[i]);
+		        		 map.centerAndZoom(point,15);
+				    }
+				        	timer= setTimeout(function(){return trackInTime(msgs)},30000);
+				            // window.close();  
+				      },  
+				      error : function() {  
+				           alert("查询失败！");  
+				      }  
+		 });
+}
+/*创建覆盖物窗口内容*/
+function getInfoWindow(data){
+var ostdesc = data.ostdesc;
+//var ostdescs = ostdesc.split(",");
+return "<div class=&quot;info&quot; style=&quot;width:100%; float:left; font-size:13px;  padding:10px; background:#f5f5f5; line-height:4px;&quot;>"
++"  <p>定位时间：<span>"+data.utc+"</span></p>"
++"  <p>状态：<span>"+ostdesc+"</span></p>"
++"  <p>经纬度：<span>"+data.lat+"</span>,<span>"+data.lon+"</span></p>"
++"  <p>位置：<span>"+data.position+"</span></p>"
++"</div>"
+}		
+    </script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+		#golist {display: none;}
+		@media (max-device-width: 780px){#golist{display: block !important;}}
+	</style>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?type=quick&ak=E6WXTMe7rUDK3gg7lmaKG7Un"></script>
+    <script type="text/javascript" src="../system/lib/jquery/jquery-1.11.1.js"></script>
+    <title>百度地图定位</title>
+    
+</head>
+<body>
+<div id="allmap"></div>
+    <div style="position:absolute;z-index:99;bottom:0;height:60px;width:100%;line-height:60px;background:#eee;border-top:1px solid #fff;">
+		<div style="width:40%;left:0px;float:right;margin-right:10%;">
+	    <div id="js-example-change-value" style="padding:0px 0px 0px 0px;margin:10px 0px 0px 0px;line-height:20px;">
+	        <input id="progress"  type="range" min="0" max="100" value="0" onchange="reDraw();" data-rangeslider style="width:99%;">
+	    </div>
+	    <div id="js-example-change-value" style="padding:0px 0px 0px 0px;margin:0px 0px 0px 0px;line-height:20px;">
+	        <input id="speed" type="range" min="1" max="5" value="0" data-rangeslider style="width:99%;">
+	    </div>
+		</div> 
+    <div class="but">
+      <button class="st" onclick="playTrack()" style="background:url(img/start.png) no-repeat center center; width:60px; height:60px; float:left; margin-left:5%;border:none;display:block;"></button>
+      <button class="sp"  onclick="playTrack()"  style="background:url(img/stop.png) no-repeat center center; width:60px; height:60px; float:left;margin-left:5%;border:none;display:none;"></button>
+      <button onclick ="stopDraw()"   style="background:url(img/over.png) no-repeat center center; width:60px; height:60px; float:left;margin-left:5%;border:none;"></button>
+    </div> 
+<script type="text/javascript" >
+	$(".st").click(function(){
+		$(".st").css({"display":"none"});
+		$(".sp").css({"display":"block"});
+	});
+	$(".sp").click(function(){
+		$(".st").css({"display":"block"});
+		$(".sp").css({"display":"none"});
+	});
+</script>
+</div>
+<script type="text/javascript" >
+		var map;
+		var points = [];
+		var icons=[];
+		var opid = "";
+		var carData;
+		var trajectory ="all";
+    	$(function(){
+    		map = new BMap.Map("allmap");
+			var preOriginPoint = new BMap.Point("116.45764191999997","39.8622934399999");
+			map.addControl(new BMap.ZoomControl());
+			map.centerAndZoom(preOriginPoint, 20);
+    	});
+	    $(window).on('message',function(message){
+	    	var data = message.originalEvent.data;
+	    	if(data){
+				try{/*这里是为了兼容IE9*/
+					data = JSON.parse(data);
+				}catch(e){}
+				var position = data.position;
+				carData = position;
+	    		var status ="";
+				for (var i=0;i<=position.length-1;i++){
+					var longitude = position[i].lon;
+					var latitude = position[i].lat;
+					var head = position[i].alt;
+					var tflag = position[i].tflag;
+					if("0".indexOf(tflag)>-1){
+						 status ="blue_";
+					}else{
+						status = "red_";
+					}
+					var address = "当前位置";
+					// 百度地图API功能
+					var originPoint = new BMap.Point(longitude,latitude);
+					var icon = status+gethead(head);
+					points.push(originPoint);
+					icons.push(icon);
+				}
+					updateProgress(points);
+					if(trajectory!="point"){
+						drawLine(points);
+					}
+					//closeLoading();
+					map.centerAndZoom(points[0], 13);
+	    	}
+		});
+var marks;
+var isclicked = true;
+var timer;
+function drawPoint(point,icon,data) {
+	// 创建小狐狸
+	var myIcon = new BMap.Icon(
+			"./img/"+icon+".png", new BMap.Size(
+					300, 157), {
+				offset : new BMap.Size(10, 25),
+				imageOffset : new BMap.Size(145, 70)
+			});
+	/*创建覆盖物信息窗口*/
+	 var opts = {    
+			 width : 270,     // 信息窗口宽度    
+			 height: 200,     // 信息窗口高度    
+			 title : data.vname  // 信息窗口标题   
+			} ;
+	 var infoWindow = new BMap.InfoWindow(getInfoWindow(data), opts);  // 创建信息窗口对象   					
+	var marker2 = new BMap.Marker(point, {
+				icon : myIcon
+			}); // 创建标注
+	marker2.addEventListener("click", function(){
+		map.openInfoWindow(infoWindow, map.getCenter());      // 打开信息窗口	
+  	}); 					
+	map.removeOverlay(marks);
+	marker2.addEventListener("click", function(){
+  	}); 		
+	map.addOverlay(marker2); // 将标注添加到地图中
+	map.centerAndZoom(point, 14);
+	marks = marker2;
+	map.setCenter(point);
+}
+function drawLine(points) {
+	// 清除地图上的遮盖物
+	map.clearOverlays();
+	// 创建百度地图线段对象
+	var polyline = new BMap.Polyline(points, {
+				strokeColor : "blue",
+				strokeWeight : 3,
+				strokeOpacity : 1
+			}); // 创建折线
+	// 在地图上添加折线
+	map.addOverlay(polyline);
+
+}
+function gethead(degree){
+	    degree =degree/3600;
+		if ((degree >= 338 && degree <= 360) || (degree >= 0 && degree < 23)) {
+			return "0";
+		} else if (degree >= 23 && degree < 68) {
+			return "45";
+		} else if (degree >= 68 && degree < 113) {
+			return "90";
+		} else if (degree >= 113 && degree < 158) {
+			return "135";
+		} else if (degree >= 158 && degree < 203) {
+			return "180";
+		} else if (degree >= 203 && degree < 248) {
+			return "225";
+		} else if (degree >= 248 && degree < 293) {
+			return "270";
+		} else if (degree >= 293 && degree < 338) {
+			return "315";
+		} else {
+			return "0";
+		}
+}
+function trackTime(msgs,opid){
+	var partenW = window.parent;
+	var parentDiv = partenW.document.getElementById('callBackDiv');
+    var parentModel = partenW.justep.Bind.contextFor(parentDiv).$model;
+    parentModel.sendTrackToMap(msgs,opid);          
+}
+function updateProgress(points){
+	document.getElementById("progress").setAttribute("max",points.length-1);
+}
+// 添加播放按钮出发事件
+var ispause=false;
+var i =0;
+var pointid =0;
+function playTrack(){
+	var speeds =document.getElementById("speed").value;
+	var progress = document.getElementById("progress").value;
+	if(parseInt(progress)>=0){
+	    pointid =parseInt(progress) ;
+	    i =parseInt(progress);
+	}
+	if(ispause){
+		stop();
+		psuse="yes";
+		ispause = false;
+	}else{
+		var pointid1 =parseInt(progress);
+		if(pointid!=pointid1){
+		   i = pointid1;
+		}
+		play();
+		ispause=true;
+	}	
+}
+function play() {//播放轨迹点逻辑
+	var j = document.getElementById("speed").value;
+	var speed =Math.round(2000/j);
+	if(i==points.length-1){
+	stop();
+	i=0;
+	}else{
+	if(i<points.length-1){
+	    drawPoint(points[i],icons[i],carData[i]);
+	}
+	timer=setTimeout("play("+j+")",speed);
+	document.getElementById("progress").value=i;
+	i++;
+	}
+}
+function stop() {
+	if (timer) {
+		window.clearTimeout(timer); // 清楚定时器
+	}
+}
+
+function stopDraw() {
+	if (timer) {
+		window.clearTimeout(timer); // 清楚定时器
+	}
+	$(".st").css({"display":"block"});
+	$(".sp").css({"display":"none"});
+	ispause = false;	
+	map.removeOverlay(marks);
+	map.setCenter(points[0]);
+}
+function reDraw(){
+	stop();
+	i = document.getElementById("progress").value;
+	drawPoint(points[i],icons[i],carData[i]);
+	play();
+}
+/*创建覆盖物窗口内容*/
+function getInfoWindow(data){
+var ostdesc = data.ostdesc;
+var ostdescs = ostdesc.split(",");
+return "<div class=&quot;info&quot; style=&quot;width:100%; float:left; font-size:13px;  padding:10px; background:#f5f5f5; line-height:4px;&quot;>"
++"  <p>定位时间：<span>"+data.utc+"</span></p>"
++"  <p>状态：<span>"+ostdesc+"</span></p>"
++"  <p>经纬度：<span>"+data.lat+"</span>,<span>"+data.lon+"</span></p>"
++"  <p>位置：<span>"+data.position+"</span></p>"
++"</div>"
+}			
+function closeLoading(){//关闭加载页面
+	var partenW = window.parent;
+	var parentDiv = partenW.document.getElementById('callBackDiv');
+    var parentModel = partenW.justep.Bind.contextFor(parentDiv).$model;
+    parentModel.closeLoading();       
+}
+    </script>
+</body>
+</html>
