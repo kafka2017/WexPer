@@ -6,8 +6,8 @@
     <div class="x-panel-top cVfYfiq" xid="top1" component="$model/UI2/system/components/justep/panel/child" data-bind="component:{name:'$model/UI2/system/components/justep/panel/child'}" __cid="cVfYfiq">
       <div component="$model/UI2/system/components/justep/titleBar/titleBar" class="x-titlebar cVfYfiq" xid="mapReplayBar" data-bind="component:{name:'$model/UI2/system/components/justep/titleBar/titleBar'}" __cid="cVfYfiq"> 
         <div class="x-titlebar-left cVfYfiq" xid="left1" __cid="cVfYfiq">
-          <a component="$model/UI2/system/components/justep/button/button" class="btn btn-default btn-only-icon cVfYfiq" xid="replayBackBtn" style="width:88px;" data-bind="component:{name:'$model/UI2/system/components/justep/button/button'}" data-events="onClick:replayBackBtnClick" data-config="{&quot;icon&quot;:&quot;icon-chevron-left&quot;,&quot;label&quot;:&quot;button&quot;}" __cid="cVfYfiq"> 
-            <i xid="i1" class="icon-chevron-left cVfYfiq" __cid="cVfYfiq"/>  
+          <a component="$model/UI2/system/components/justep/button/button" class="btn btn-default cVfYfiq" xid="replayBackBtn" style="width:88px;" data-bind="component:{name:'$model/UI2/system/components/justep/button/button'}" data-events="onClick:replayBackBtnClick" data-config="{&quot;icon&quot;:&quot;linear linear-chevronleft&quot;}" __cid="cVfYfiq"> 
+            <i xid="i1" class="linear linear-chevronleft cVfYfiq" __cid="cVfYfiq"/>  
             <span xid="span1" __cid="cVfYfiq" class="cVfYfiq"/>
           </a>
         </div>  

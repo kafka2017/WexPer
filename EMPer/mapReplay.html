@@ -8,8 +8,10 @@
 		#golist {display: none;}
 		@media (max-device-width: 780px){#golist{display: block !important;}}
 	</style>
-	<script type="text/javascript" src="http://api.map.baidu.com/api?type=quick&ak=E6WXTMe7rUDK3gg7lmaKG7Un"></script>
     <script type="text/javascript" src="../system/lib/jquery/jquery-1.11.1.js"></script>
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
     <title>百度地图定位</title>
     
 </head>
@@ -50,7 +52,7 @@
     	$(function(){
     		map = new BMap.Map("allmap");
 			var preOriginPoint = new BMap.Point("116.45764191999997","39.8622934399999");
-			map.addControl(new BMap.ZoomControl());
+			//map.addControl(new BMap.ZoomControl());
 			map.centerAndZoom(preOriginPoint, 20);
     	});
 	    $(window).on('message',function(message){
@@ -62,10 +64,12 @@
 				var position = data.position;
 				carData = position;
 	    		var status ="";
+	    		console.log(position);
 				for (var i=0;i<=position.length-1;i++){
 					var longitude = position[i].lon;
 					var latitude = position[i].lat;
 					var head = position[i].alt;
+					
 					var tflag = position[i].tflag;
 					if("0".indexOf(tflag)>-1){
 						 status ="blue_";
@@ -76,8 +80,15 @@
 					// 百度地图API功能
 					var originPoint = new BMap.Point(longitude,latitude);
 					var icon = status+gethead(head);
+					//console.log("计算前:"+head);
+					//console.log("计算后："+gethead(head));
+					
+					
 					points.push(originPoint);
 					icons.push(icon);
+					
+					
+					
 				}
 					updateProgress(points);
 					if(trajectory!="point"){

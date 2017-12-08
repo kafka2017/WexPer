@@ -460,10 +460,10 @@
    <i xid="i44"></i>
    <span xid="span49">前天</span></a></div></div>
   <div component="$UI/system/components/justep/row/row" class="x-row" xid="row30">
-   <div class="x-col" xid="col64"><input component="$UI/system/components/justep/input/input" class="form-control" xid="startInput" dataType="DateTime" format="yyyy-MM-dd hh:mm:ss"></input></div>
+   <div class="x-col" xid="col64"><input component="$UI/system/components/justep/input/input" class="form-control" xid="startInput" dataType="DateTime" format="yyyy-MM-dd hh:mm:ss" bind-click="startInputBlur"></input></div>
    </div>
   <div component="$UI/system/components/justep/row/row" class="x-row" xid="row31">
-   <div class="x-col" xid="col67"><input component="$UI/system/components/justep/input/input" class="form-control" xid="endInput" dataType="DateTime" format="yyyy-MM-dd hh:mm:ss"></input></div>
+   <div class="x-col" xid="col67"><input component="$UI/system/components/justep/input/input" class="form-control" xid="endInput" dataType="DateTime" format="yyyy-MM-dd hh:mm:ss" pattern="yyyy-MM-dd hh:mm:ss" bind-click="endInputBlur"></input></div>
    </div>
   <div component="$UI/system/components/justep/row/row" class="x-row" xid="row32">
    <div class="x-col" xid="col70"><a component="$UI/system/components/justep/button/button" class="btn btn-default" label="回放" xid="trackBackBtn" style="height:100%;width:100%;" onClick="trackBackBtnClick">

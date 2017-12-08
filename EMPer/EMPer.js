@@ -18,6 +18,8 @@ define(function(require){
 		this.mapLoad = true;
 		this.trajectory ="all";
 		this.carlog;
+		this.bDate = false;
+		this.eDate = false;
 	};
 	
 	//里程信息回跳至countContent 上一页
@@ -72,12 +74,13 @@ define(function(require){
 	};
 
 	Model.prototype.getMileAge = function(event,startDate,endDate){//里程统计
-		if(this.unitList.length>0){
-			this.comp("unitpopOver").show();
-			var mileage =this.comp("mileAgeData");
+		var self = this;
+		if(self.unitList.length>0){
+			self.comp("unitpopOver").show();
+			var mileage =self.comp("mileAgeData");
 			mileage.clear();
 			mileage.refreshData();
-			var suidlist = this.unitList.toString();
+			var suidlist = self.unitList.toString();
 //			var msg ="{suid:'592061,616996,589043,616472,616409',startdata:'"+startDate+"',enddata:'"+endDate+"'}";
 			var msg ="{suid:'"+suidlist+"',startdata:'"+startDate+"',enddata:'"+endDate+"'}";
 			$.ajax({
@@ -92,7 +95,7 @@ define(function(require){
 					if(msg.success){
 						var data = msg.data;
 						if(msg.size===0){
-							this.comp("unitpopOver").hide();
+							self.comp("unitpopOver").hide();
 							justep.Util.hint("未查询到当前时间段的数据", {position:"middle"});
 							return;
 						}						
@@ -103,15 +106,15 @@ define(function(require){
 							});
 						}
 						mileage.refreshData();
-						this.comp("unitpopOver").hide();
+						self.comp("unitpopOver").hide();
 					}else{
-						this.comp("unitpopOver").hide();
+						self.comp("unitpopOver").hide();
 						justep.Util.hint(msg.data, {position:"middle"});
 //						alert(msg.data);
 					}
 				},
 				error: function(){
-					this.comp("unitpopOver").hide();
+					self.comp("unitpopOver").hide();
 					justep.Util.hint("未查询到当前时间段的数据", {position:"middle"});
 //					alert("数据查询错误，请稍候再试");
 				}
@@ -121,10 +124,11 @@ define(function(require){
 		}
 	};
 	Model.prototype.getAlarmCount = function(event,startDate,endDate){//报警统计
-		if(this.unitList.length>0){
-			this.comp("unitpopOver").show();
-			var alalrm =this.comp("alarmData");
-			var suidList = this.unitList.toString();
+		var self = this;
+		if(self.unitList.length>0){
+			self.comp("unitpopOver").show();
+			var alalrm =self.comp("alarmData");
+			var suidList = self.unitList.toString();
 			alalrm.clear();
 			alalrm.refreshData();
 //			var msg ="{suid:'592061,616996,589043,616472,616409',startdata:'"+startDate+"',enddata:'"+endDate+"',opid:"+this.opid+"}";
@@ -141,7 +145,7 @@ define(function(require){
 					if(msg.success){
 						var data = msg.data;
 						if(msg.size===0){
-							this.comp("unitpopOver").hide();
+							self.comp("unitpopOver").hide();
 							justep.Util.hint("未查询到当前时间段的数据", {position:"middle"});
 							return;
 						}
@@ -152,16 +156,16 @@ define(function(require){
 							});
 						}
 						alalrm.refreshData();
-						this.comp("unitpopOver").hide();
+						self.comp("unitpopOver").hide();
 					}else{
 //						alert(msg.data);
-						this.comp("unitpopOver").hide();
+						self.comp("unitpopOver").hide();
 						justep.Util.hint(msg.data, {position:"middle"});
 					}
 				},
 				error: function(){
 //					alert("数据查询错误，请稍候再试");
-					this.comp("unitpopOver").hide();
+					self.comp("unitpopOver").hide();
 					justep.Util.hint("未查询到当前时间段的数据", {position:"middle"});
 				}
 			});
@@ -480,15 +484,20 @@ define(function(require){
 		var date= new Date();
 		var lasttime = date.getTime()-1000*60*60*24*2;
 		var lastday = new Date(lasttime);
-		this.comp("startInput").val(lastday.toLocaleDateString().replace("/", "-").replace("/", "-")+" 00:00:00");
-		this.comp("endInput").val(lastday.toLocaleDateString().replace("/", "-").replace("/", "-")+" 23:59:59");
+		var startInput = this.strDateFormat(lastday, "yyyy-MM-dd 00:00:00");
+		var endInput = this.strDateFormat(lastday, "yyyy-MM-dd 23:59:59");
+		this.comp("startInput").val(startInput);
+		this.comp("endInput").val(endInput);
 	};
-	Model.prototype.lastDayBtnClick = function(event){//前一天
+	//昨天
+	Model.prototype.lastDayBtnClick = function(event){
 		var date= new Date();
 		var lasttime = date.getTime()-1000*60*60*24;
 		var lastday = new Date(lasttime);
-		this.comp("startInput").val(lastday.toLocaleDateString().replace("/", "-").replace("/", "-")+" 00:00:00");
-		this.comp("endInput").val(lastday.toLocaleDateString().replace("/", "-").replace("/", "-")+" 23:59:59");
+		var startInput = this.strDateFormat(lastday, "yyyy-MM-dd 00:00:00");
+		var endInput = this.strDateFormat(lastday, "yyyy-MM-dd 23:59:59");
+		this.comp("startInput").val(startInput);
+		this.comp("endInput").val(endInput);
 	};
 	Model.prototype.trackBackBtnClick = function(event){//轨迹回放
 		this.comp("unitpopOver").show();
@@ -505,15 +514,36 @@ define(function(require){
 				this.comp("unitpopOver").hide();
 				return false;
 			}
-			var startDate = Math.round(new Date(startInput)/1000);
-			var endDate = Math.round(new Date(endInput)/1000);
+			var endd = new Date(endInput);
+			endd = self.strDateFormat(endd, 'yyyy-MM-dd HH:mm:ss');
+			
+			console.log(this.eDate);
+			
+			var startDate = (Date.parse(new Date(startInput)))/1000;
+			var endDate = (Date.parse(new Date(endInput)))/1000;
 			var lastdesc ="";
 			unitlData.each(function(options){
 				if(vname==options.row.val("vname")){
 					suid = options.row.val("suid");
 				}
 			});
+			console.log("改变之前："+startDate);
+			console.log("改变之前"+endDate);
+			
+			//如果选择了日期，就减去8小时，日期控件有BUG
+			if(this.bDate){
+				startDate = startDate-28800;
+			}
+			
+			if(this.eDate){
+				endDate = endDate-28800;
+			}
+			
+			console.log("改变之后："+startDate);
+			console.log("改变之后"+endDate);
+			
 			var msg ="{suid:"+suid+",begintime:'"+startDate+"',endtime:'"+endDate+"'}";
+			
 			$.ajax({
 				type: 'post',
 				url: "http://222.161.211.36:8080/Android_Server/suidtrack",
@@ -718,7 +748,8 @@ define(function(require){
 			}
 		}else{
 			thStatus = "red_";
-		}		
+		}
+		console.log("thHead:"+thHead);		
 		var icon = "./img/"+thStatus+thHead+".png";
 		return icon;
 	};//获取车辆方向代码
@@ -783,8 +814,11 @@ define(function(require){
 	};
 	Model.prototype.tackContentActive = function(event){
 		var date= new Date();
-		this.comp("startInput").val(date.toLocaleDateString().replace("/", "-").replace("/", "-")+" 00:00:00");
-		this.comp("endInput").val(date.toLocaleDateString().replace("/", "-").replace("/", "-")+" 23:59:59");
+		
+		var startInput = this.strDateFormat(date, "yyyy-MM-dd 00:00:00")
+		var endInput =  this.strDateFormat(date, "yyyy-MM-dd 23:59:59")
+		this.comp("startInput").val(startInput);
+		this.comp("endInput").val(endInput);
 	};
 	Model.prototype.clearAllData = function(){
 		this.comp("userData").clear();
@@ -796,5 +830,52 @@ define(function(require){
 		this.comp("groupData").refreshData();
 		this.comp("unitListData").refreshData();
 	}
+	
+	//日期格式化 番茄
+	Model.prototype.strDateFormat = function(date,fmt){
+		var o = {         
+		    "M+" : date.getMonth()+1, //月份         
+		    "d+" : date.getDate(), //日         
+		    "h+" : date.getHours()%12 == 0 ? 12 : date.getHours()%12, //小时         
+		    "H+" : date.getHours(), //小时         
+		    "m+" : date.getMinutes(), //分         
+		    "s+" : date.getSeconds(), //秒         
+		    "q+" : Math.floor((date.getMonth()+3)/3), //季度         
+		    "S" : date.getMilliseconds() //毫秒         
+		    };         
+		    var week = {         
+		    "0" : "/u65e5",         
+		    "1" : "/u4e00",         
+		    "2" : "/u4e8c",         
+		    "3" : "/u4e09",         
+		    "4" : "/u56db",         
+		    "5" : "/u4e94",         
+		    "6" : "/u516d"        
+		    };         
+		    if(/(y+)/.test(fmt)){         
+		        fmt=fmt.replace(RegExp.$1, (date.getFullYear()+"").substr(4 - RegExp.$1.length));         
+		    }         
+		    if(/(E+)/.test(fmt)){         
+		        fmt=fmt.replace(RegExp.$1, ((RegExp.$1.length>1) ? (RegExp.$1.length>2 ? "/u661f/u671f" : "/u5468") : "")+week[date.getDay()+""]);         
+		    }         
+		    for(var k in o){         
+		        if(new RegExp("("+ k +")").test(fmt)){         
+		            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));         
+		        }         
+		    }         
+		    return fmt;
+	}
+	
+	
+	Model.prototype.endInputBlur = function(event){
+		this.eDate = true;
+		//alert("edate");
+	};
+	
+	Model.prototype.startInputBlur = function(event){
+		this.bDate = true;
+		//alert("sdate");
+	};
+	
 	return Model;
 });

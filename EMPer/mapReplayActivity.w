@@ -4,8 +4,8 @@
   <div component="$UI/system/components/justep/model/model" xid="model" style="top:77px;left:-77px;height:auto;"/> 
 <div component="$UI/system/components/justep/panel/panel" class="x-panel x-full" xid="mapPanel" style="z-index:1;">
    <div class="x-panel-top" xid="top1"><div component="$UI/system/components/justep/titleBar/titleBar" class="x-titlebar" xid="mapReplayBar">
-   <div class="x-titlebar-left" xid="left1"><a component="$UI/system/components/justep/button/button" class="btn btn-default btn-only-icon" label="button" xid="replayBackBtn" style="width:88px;" icon="icon-chevron-left" onClick="replayBackBtnClick">
-   <i xid="i1" class="icon-chevron-left"></i>
+   <div class="x-titlebar-left" xid="left1"><a component="$UI/system/components/justep/button/button" class="btn btn-default" xid="replayBackBtn" style="width:88px;" icon="linear linear-chevronleft" onClick="replayBackBtnClick">
+   <i xid="i1" class="linear linear-chevronleft"></i>
    <span xid="span1"></span></a></div>
    <div class="x-titlebar-title" xid="title1"></div>
    <div class="x-titlebar-right reverse" xid="right1"></div></div></div><div class="x-panel-content" xid="mapArea" style="font-size:0">
