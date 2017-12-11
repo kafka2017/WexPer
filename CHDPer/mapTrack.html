@@ -8,8 +8,10 @@
 		#golist {display: none;}
 		@media (max-device-width: 780px){#golist{display: block !important;}}
 	</style>
-	<script type="text/javascript" src="http://api.map.baidu.com/api?type=quick&ak=E6WXTMe7rUDK3gg7lmaKG7Un"></script>
     <script type="text/javascript" src="../system/lib/jquery/jquery-1.11.1.js"></script>
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
     <title>百度地图定位</title>
     
 </head>
@@ -39,7 +41,7 @@
 				for (var i=0;i<=position.length-1;i++){
 					var longitude = position[i].lon;
 					var latitude = position[i].lat;
-					var head = position[i].alt;
+					var head = position[i].headnum;
 					var suid = position[i].suid;
 					var tflag = position[i].tflag;
 					var outOrIn = position[i].outlinestatedesc;
@@ -151,7 +153,7 @@ function trackInTime(msgs){
 		        	for(var i=0;i<=dataobj.length-1;i++){
 		        		 var point = new BMap.Point(dataobj[i].lon,dataobj[i].lat); 
 		        		 var suid = dataobj[i].suid;
-						 var head = dataobj[i].alt;
+						 var head = dataobj[i].headnum;
 						 var icon = gethead(head);
 						 var outOrIn = dataobj[i].outlinestatedesc;
 						 if("在线".indexOf(outOrIn)>-1){

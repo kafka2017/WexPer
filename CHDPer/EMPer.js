@@ -4,7 +4,7 @@ define(function(require){
 	$.support.cors = true;
 	var justep = require("$UI/system/lib/justep");
 	var versionChecker = require("$UI/CHDPer/appVersionChecker");
-	require("cordova!com.justep.cordova.plugin.weixin.v3");
+	require("w!/UI2/CHDPer/mapActivity.w");
 //公共变量定义
 	var Model = function(){
 		this.callParent();
@@ -18,6 +18,8 @@ define(function(require){
 		this.mapLoad = true;
 		this.trajectory ="all";
 		this.carlog;
+		this.bDate = false;
+		this.eDate = false;
 	};
 	
 	//里程信息回跳至countContent 上一页
@@ -72,12 +74,13 @@ define(function(require){
 	};
 
 	Model.prototype.getMileAge = function(event,startDate,endDate){//里程统计
-		if(this.unitList.length>0){
-			this.comp("unitpopOver").show();
-			var mileage =this.comp("mileAgeData");
+		var self = this;
+		if(self.unitList.length>0){
+			self.comp("unitpopOver").show();
+			var mileage =self.comp("mileAgeData");
 			mileage.clear();
 			mileage.refreshData();
-			var suidlist = this.unitList.toString();
+			var suidlist = self.unitList.toString();
 //			var msg ="{suid:'592061,616996,589043,616472,616409',startdata:'"+startDate+"',enddata:'"+endDate+"'}";
 			var msg ="{suid:'"+suidlist+"',startdata:'"+startDate+"',enddata:'"+endDate+"'}";
 			$.ajax({
@@ -92,7 +95,7 @@ define(function(require){
 					if(msg.success){
 						var data = msg.data;
 						if(msg.size===0){
-							this.comp("unitpopOver").hide();
+							self.comp("unitpopOver").hide();
 							justep.Util.hint("未查询到当前时间段的数据", {position:"middle"});
 							return;
 						}						
@@ -103,15 +106,15 @@ define(function(require){
 							});
 						}
 						mileage.refreshData();
-						this.comp("unitpopOver").hide();
+						self.comp("unitpopOver").hide();
 					}else{
-						this.comp("unitpopOver").hide();
+						self.comp("unitpopOver").hide();
 						justep.Util.hint(msg.data, {position:"middle"});
 //						alert(msg.data);
 					}
 				},
 				error: function(){
-					this.comp("unitpopOver").hide();
+					self.comp("unitpopOver").hide();
 					justep.Util.hint("未查询到当前时间段的数据", {position:"middle"});
 //					alert("数据查询错误，请稍候再试");
 				}
@@ -121,10 +124,11 @@ define(function(require){
 		}
 	};
 	Model.prototype.getAlarmCount = function(event,startDate,endDate){//报警统计
-		if(this.unitList.length>0){
-			this.comp("unitpopOver").show();
-			var alalrm =this.comp("alarmData");
-			var suidList = this.unitList.toString();
+		var self = this;
+		if(self.unitList.length>0){
+			self.comp("unitpopOver").show();
+			var alalrm =self.comp("alarmData");
+			var suidList = self.unitList.toString();
 			alalrm.clear();
 			alalrm.refreshData();
 //			var msg ="{suid:'592061,616996,589043,616472,616409',startdata:'"+startDate+"',enddata:'"+endDate+"',opid:"+this.opid+"}";
@@ -141,7 +145,7 @@ define(function(require){
 					if(msg.success){
 						var data = msg.data;
 						if(msg.size===0){
-							this.comp("unitpopOver").hide();
+							self.comp("unitpopOver").hide();
 							justep.Util.hint("未查询到当前时间段的数据", {position:"middle"});
 							return;
 						}
@@ -152,16 +156,16 @@ define(function(require){
 							});
 						}
 						alalrm.refreshData();
-						this.comp("unitpopOver").hide();
+						self.comp("unitpopOver").hide();
 					}else{
 //						alert(msg.data);
-						this.comp("unitpopOver").hide();
+						self.comp("unitpopOver").hide();
 						justep.Util.hint(msg.data, {position:"middle"});
 					}
 				},
 				error: function(){
 //					alert("数据查询错误，请稍候再试");
-					this.comp("unitpopOver").hide();
+					self.comp("unitpopOver").hide();
 					justep.Util.hint("未查询到当前时间段的数据", {position:"middle"});
 				}
 			});
@@ -513,6 +517,15 @@ define(function(require){
 					suid = options.row.val("suid");
 				}
 			});
+			
+			if(this.bDate){
+				startDate = startDate -28800;
+			}
+			
+			if(this.eDate){
+				endDate = endDate -28800;
+			}
+			
 			var msg ="{suid:"+suid+",begintime:'"+startDate+"',endtime:'"+endDate+"'}";
 			$.ajax({
 				type: 'post',
@@ -796,5 +809,13 @@ define(function(require){
 		this.comp("groupData").refreshData();
 		this.comp("unitListData").refreshData();
 	}
+	Model.prototype.startInputClick = function(event){
+		this.bDate = true;
+	};
+	
+	Model.prototype.endInputClick = function(event){
+		this.eDate = true;
+	};
+	
 	return Model;
 });

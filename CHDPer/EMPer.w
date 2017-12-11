@@ -98,7 +98,8 @@
   <column name="tflag" type="String" xid="xid59"></column>
   <column name="vflag" type="String" xid="xid60"></column>
   <column name="utc" type="String" xid="xid61"></column>
-  <column name="ostdesc1" type="String" xid="xid62"></column></div>
+  <column name="ostdesc1" type="String" xid="xid62"></column>
+  <column name="headnum" type="String" xid="xid22"></column></div>
   <div component="$UI/system/components/justep/data/data" autoLoad="true" xid="carData" idColumn="suid" confirmRefresh="false">
    <column label="服务单元号" name="suid" type="Integer" xid="column38"></column>
   <column label="所属公司代码" name="sgid" type="Integer" xid="column39"></column>
@@ -460,10 +461,10 @@
    <i xid="i44"></i>
    <span xid="span49">前天</span></a></div></div>
   <div component="$UI/system/components/justep/row/row" class="x-row" xid="row30">
-   <div class="x-col" xid="col64"><input component="$UI/system/components/justep/input/input" class="form-control" xid="startInput" dataType="DateTime" format="yyyy-MM-dd hh:mm:ss"></input></div>
+   <div class="x-col" xid="col64"><input component="$UI/system/components/justep/input/input" class="form-control" xid="startInput" dataType="DateTime" format="yyyy-MM-dd hh:mm:ss" bind-click="startInputClick"></input></div>
    </div>
   <div component="$UI/system/components/justep/row/row" class="x-row" xid="row31">
-   <div class="x-col" xid="col67"><input component="$UI/system/components/justep/input/input" class="form-control" xid="endInput" dataType="DateTime" format="yyyy-MM-dd hh:mm:ss"></input></div>
+   <div class="x-col" xid="col67"><input component="$UI/system/components/justep/input/input" class="form-control" xid="endInput" dataType="DateTime" format="yyyy-MM-dd hh:mm:ss" bind-click="endInputClick"></input></div>
    </div>
   <div component="$UI/system/components/justep/row/row" class="x-row" xid="row32">
    <div class="x-col" xid="col70"><a component="$UI/system/components/justep/button/button" class="btn btn-default" label="回放" xid="trackBackBtn" style="height:100%;width:100%;" onClick="trackBackBtnClick">

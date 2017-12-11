@@ -14,9 +14,11 @@
 		.text select{width:252px;border:1px solid #ddd; }
 		.text button{  background:#0068b7; border:0; color:#fff; margin:1px 5px 0; float:right;padding:0 10px;border-radius:3px;}		
 	</style>
-	<script type="text/javascript" src="http://api.map.baidu.com/api?type=quick&ak=E6WXTMe7rUDK3gg7lmaKG7Un&v=2.0"></script>
-	<script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+	
     <script type="text/javascript" src="../system/lib/jquery/jquery-1.11.1.js"></script>
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=74af171e2b27ee021ed33e549a9d3fb9"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
     <title>百度地图定位</title>
     
 </head>
@@ -77,7 +79,7 @@ $(document).ready(function(e) {
 				for (var i=0;i<=position.length-1;i++){
 					var longitude = position[i].lon;
 					var latitude = position[i].lat;
-					var head = position[i].alt;
+					var head = position[i].headnum;
 					var suid = position[i].suid;
 					var tflag = position[i].tflag;
 					var vname =position[i].vname;
@@ -120,6 +122,7 @@ var marks;
 var isclicked = true;
 //地图画点
 function drawPoint(point,icon,status,data) {
+	console.log("icon:"+icon);
 	// 创建图标
 	var myIcon = new BMap.Icon(
 			"./img/"+status+icon+".png", new BMap.Size(
