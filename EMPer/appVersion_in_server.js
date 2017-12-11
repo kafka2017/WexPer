@@ -1,7 +1,7 @@
 define(function(require){
 	var versionInfo = {
 	  androidApp:{
-	  	version:"1.1.5",
+	  	version:"1.1.6",
 	  	changeLog:"1.update \n 2.bugrepair",
 	  	downloadUrl:"http://222.161.211.36:8080/EMApp/app.apk"
 	  },

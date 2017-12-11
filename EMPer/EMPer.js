@@ -543,7 +543,7 @@ define(function(require){
 			console.log("改变之后"+endDate);
 			
 			var msg ="{suid:"+suid+",begintime:'"+startDate+"',endtime:'"+endDate+"'}";
-			
+			//console.log(msg);
 			$.ajax({
 				type: 'post',
 				url: "http://222.161.211.36:8080/Android_Server/suidtrack",
@@ -555,6 +555,8 @@ define(function(require){
 				success : function(msg) {
 					if(msg.success){
 						var data = msg.data;
+						console.log("请求服务器：");
+						console.log(data);
 						for (var i=0;i<data.length;i++){
 							var ostdescs =data[i].ostdesc.split(",");
 							replayData.newData({

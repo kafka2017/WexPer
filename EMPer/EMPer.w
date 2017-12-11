@@ -98,7 +98,8 @@
   <column name="tflag" type="String" xid="xid59"></column>
   <column name="vflag" type="String" xid="xid60"></column>
   <column name="utc" type="String" xid="xid61"></column>
-  <column name="ostdesc1" type="String" xid="xid62"></column></div>
+  <column name="ostdesc1" type="String" xid="xid62"></column>
+  <column name="headnum" type="String" xid="xid22"></column></div>
   <div component="$UI/system/components/justep/data/data" autoLoad="true" xid="carData" idColumn="suid" confirmRefresh="false">
    <column label="服务单元号" name="suid" type="Integer" xid="column38"></column>
   <column label="所属公司代码" name="sgid" type="Integer" xid="column39"></column>

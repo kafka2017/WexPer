@@ -9,6 +9,8 @@ define(function(require){
 	Model.prototype.mapReplayReceiverReceive = function(event){
 		this.comp("unitpopOver").show();
 		var position = event.data;
+		console.log("接收的数据：");
+		console.log(position);
 		var vname = position.sendVname;
 		this.comp("mapReplayBar").set({"title":vname});
 		var mapPanelId = $(this.getElementByXid("mapPanel")).attr('id');
